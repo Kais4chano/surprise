@@ -15,7 +15,6 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  transition: background 0.6s ease;
 }
 
 .container {
@@ -47,9 +46,8 @@ p {
   padding: 28px 12px;
   cursor: pointer;
   box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  transition: transform 0.4s ease, opacity 0.6s ease;
+  transition: transform 0.25s ease, opacity 0.4s ease;
   position: relative;
-  opacity: 1;
 }
 
 .card:hover {
@@ -62,23 +60,6 @@ p {
   cursor: default;
 }
 
-/* Effet ouverture carte */
-.card.active {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(1.2);
-  z-index: 10;
-  transition: transform 0.6s ease, opacity 0.6s ease;
-}
-
-/* Cartes qui s'envolent */
-.card.disparait {
-  transform: translateY(-80px) rotate(10deg);
-  opacity: 0;
-  transition: transform 0.6s ease, opacity 0.6s ease;
-}
-
 /* Bouton replay */
 #replayBtn {
   margin-top: 16px;
@@ -89,25 +70,12 @@ p {
   background: #6b5dd7;
   color: white;
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.3s ease, opacity 0.4s ease;
-  opacity: 0;
-  pointer-events: none;
-}
-
-#replayBtn.show {
-  opacity: 1;
-  pointer-events: auto;
+  transition: transform 0.2s ease, background 0.3s ease;
 }
 
 #replayBtn:hover {
   transform: scale(1.05);
   background: #5a4dc7;
-}
-
-footer {
-  margin-top: 24px;
-  font-size: 0.85rem;
-  color: #666;
 }
 </style>
 </head>
@@ -120,12 +88,12 @@ footer {
   Enfin… presque.</p>
 
   <div class="grid">
-    <div class="card" onclick="reveal(this)">Tu gagnes…</div>
-    <div class="card" onclick="reveal(this)">Rawr</div>
-    <div class="card" onclick="reveal(this)">Vérité</div>
-    <div class="card" onclick="reveal(this)">Autre vérité</div>
-    <div class="card" onclick="reveal(this)">Irresponsable</div>
-    <div class="card" onclick="reveal(this)">Surprise</div>
+    <div class="card" data-message="Tu n’habites plus un appart dans mon cœur. Upgrade validé. Villa avec piscine.">Tu gagnes…</div>
+    <div class="card" data-message="Ton corps me manque (pas seulement ton corps, tout)">Rawr</div>
+    <div class="card" data-message="Je pensais être calme. Puis tu existes.">Vérité</div>
+    <div class="card" data-message="Tu fais partie des choses que je n’explique pas mais que je choisis.">Autre vérité</div>
+    <div class="card" data-message="Si je te regarde trop longtemps, ce n’est pas de ma faute, t'abuses sur la beauté.">Irresponsable</div>
+    <div class="card" data-message="Bliblablblabliblou">Surprise</div>
   </div>
 
   <button id="replayBtn" onclick="recommencer()">Revenir autrement</button>
@@ -137,62 +105,17 @@ footer {
 </div>
 
 <script>
-/* --- Messages aléatoires --- */
-const messages = [
-  "Tu n’habites plus un appart dans mon cœur. Upgrade validé. Villa avec piscine.",
-  "Je pensais être calme. Puis tu existes.",
-  "Si je te regarde trop longtemps, ce n’est pas de ma faute, t'abuses sur la beauté.",
-  "Tu fais partie des choses que je n’explique pas mais que je choisis.",
-  "Ton corps me manque (pas seulement ton corps, tout)",
-  "Bliblablblabliblou"
-];
-
-/* --- Récupération du choix précédent --- */
-let choixDejaFait = localStorage.getItem("choix");
 const replayBtn = document.getElementById('replayBtn');
 
-/* --- Fonction de révélation d'une carte --- */
+// fonction pour révéler la carte
 function reveal(card) {
-  if (card.classList.contains("revealed")) return;
+  if(card.classList.contains('revealed')) return;
 
-  // stocker le choix
-  localStorage.setItem("choix", card.textContent);
-
-  // afficher un message aléatoire
-  const msg = messages.splice(Math.floor(Math.random() * messages.length), 1)[0];
-  card.textContent = msg;
-  card.classList.add("revealed", "active");
-
-  // faire s'envoler les autres cartes
-  document.querySelectorAll('.card').forEach(c => {
-    if(c !== card) c.classList.add("disparait");
-  });
+  card.textContent = card.dataset.message;
+  card.classList.add('revealed');
 
   // montrer le bouton replay
-  setTimeout(() => {
-    replayBtn.classList.add("show");
-  }, 600); // après l'animation
+  replayBtn.style.display = "inline-block";
 }
 
-/* --- Recommencer la boucle --- */
-function recommencer() {
-  document.body.classList.add("transition");
-  setTimeout(() => {
-    window.location.reload();
-  }, 600);
-}
-
-/* --- Affichage si choix existant --- */
-if(choixDejaFait) {
-  document.querySelectorAll('.card').forEach(card => {
-    if(card.textContent === choixDejaFait) {
-      card.classList.add('revealed', 'active');
-    } else {
-      card.classList.add('disparait');
-    }
-  });
-  replayBtn.classList.add("show");
-}
-</script>
-</body>
-</html>
+// recommencer : remettre la grille visible sans bloquer les
