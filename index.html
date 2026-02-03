@@ -5,7 +5,6 @@
 <title>Pour toi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-/* --- Styles généraux --- */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -23,15 +22,8 @@ body {
   text-align: center;
 }
 
-h1 {
-  font-size: 1.6rem;
-  margin-bottom: 12px;
-}
-
-p {
-  font-size: 1rem;
-  margin-bottom: 24px;
-}
+h1 { font-size: 1.6rem; margin-bottom: 12px; }
+p { font-size: 1rem; margin-bottom: 24px; }
 
 .grid {
   display: grid;
@@ -39,7 +31,6 @@ p {
   gap: 16px;
 }
 
-/* --- Cartes --- */
 .card {
   background: white;
   border-radius: 14px;
@@ -50,9 +41,7 @@ p {
   position: relative;
 }
 
-.card:hover {
-  transform: scale(1.03);
-}
+.card:hover { transform: scale(1.03); }
 
 .card.revealed {
   background: #2c2c2c;
@@ -60,7 +49,6 @@ p {
   cursor: default;
 }
 
-/* Bouton replay */
 #replayBtn {
   margin-top: 16px;
   padding: 10px 18px;
@@ -73,19 +61,16 @@ p {
   transition: transform 0.2s ease, background 0.3s ease;
 }
 
-#replayBtn:hover {
-  transform: scale(1.05);
-  background: #5a4dc7;
-}
+#replayBtn:hover { transform: scale(1.05); background: #5a4dc7; }
+#replayBtn { display: none; } /* invisible tant qu’aucune carte n’est cliquée */
+footer { margin-top: 24px; font-size: 0.85rem; color: #666; }
 </style>
 </head>
 
 <body>
 <div class="container">
   <h1>J’ai pensé à toi</h1>
-  <p>Clique sur une carte.  
-  Aucune n’est dangereuse.  
-  Enfin… presque.</p>
+  <p>Clique sur une carte. Aucune n’est dangereuse. Enfin… presque.</p>
 
   <div class="grid">
     <div class="card" data-message="Tu n’habites plus un appart dans mon cœur. Upgrade validé. Villa avec piscine.">Tu gagnes…</div>
@@ -93,10 +78,10 @@ p {
     <div class="card" data-message="Je pensais être calme. Puis tu existes.">Vérité</div>
     <div class="card" data-message="Tu fais partie des choses que je n’explique pas mais que je choisis.">Autre vérité</div>
     <div class="card" data-message="Si je te regarde trop longtemps, ce n’est pas de ma faute, t'abuses sur la beauté.">Irresponsable</div>
-    <div class="card" data-message="Bliblablblabliblou">Danger</div>
+    <div class="card" data-message="Bliblablblabliblou">Surprise</div>
   </div>
 
-  <button id="replayBtn" onclick="recommencer()">Refresh (fresh comme toi)</button>
+  <button id="replayBtn">Revenir autrement</button>
 
   <footer>
     Sous contrôle de M. Chano Keroum, huissier de justice agréé
@@ -104,17 +89,22 @@ p {
 </div>
 
 <script>
-const replayBtn = document.getElementById('replayBtn');
+// Attacher les événements aux cartes
+document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('click', function() {
+    if (!card.classList.contains('revealed')) {
+      card.textContent = card.dataset.message;
+      card.classList.add('revealed');
+      document.getElementById('replayBtn').style.display = "inline-block";
+    }
+  });
+});
 
-// fonction pour révéler la carte
-function reveal(card) {
-  if(card.classList.contains('revealed')) return;
-
-  card.textContent = card.dataset.message;
-  card.classList.add('revealed');
-
-  // montrer le bouton replay
-  replayBtn.style.display = "inline-block";
-}
-
-// recommencer : remettre la grille visible sans bloquer les
+// Bouton “Revenir autrement”
+document.getElementById('replayBtn').addEventListener('click', function() {
+  // juste faire défiler en haut, laisser les cartes révélées en place
+  window.scrollTo(0,0);
+});
+</script>
+</body>
+</html>
