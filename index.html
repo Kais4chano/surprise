@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Une petite surprise pour toi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #f6f0ff, #fff);
+  color: #2c2c2c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 420px;
+  padding: 24px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+}
+
+p {
+  font-size: 1rem;
+  margin-bottom: 24px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 28px 12px;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transition: transform 0.25s ease;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.card.revealed {
+  background: #2c2c2c;
+  color: white;
+  cursor: default;
+}
+
+footer {
+  margin-top: 24px;
+  font-size: 0.85rem;
+  color: #666;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>J’ai pensé à toi</h1>
+  <p>Clique sur une carte.  
+  Aucune n’est dangereuse.  
+  Enfin… presque.</p>
+
+  <div class="grid">
+    <div class="card" onclick="reveal(this)">Tu gagnes…</div>
+    <div class="card" onclick="reveal(this)">À toi de voir</div>
+    <div class="card" onclick="reveal(this)">Attention</div>
+    <div class="card" onclick="reveal(this)">Dernière chance</div>
+    <div class="card" onclick="reveal(this)">Curiosité</div>
+    <div class="card" onclick="reveal(this)">Surprise</div>
+  </div>
+
+  <footer>
+    Ceci est une zone sécurisée.  
+    Toute émotion est assumée.
+  </footer>
+</div>
+
+<script>
+const messages = [
+  "Tu n’habites plus un appart dans mon cœur. Upgrade validé. Villa avec piscine.",
+  "Je pensais être calme. Puis tu existes.",
+  "Si je te regarde trop longtemps, ce n’est pas de ma faute.",
+  "Tu fais partie des choses que je n’explique pas mais que je choisis.",
+  "Ton corps me manque. Et pas seulement ton corps.",
+  "Cette carte était neutre. Elle a menti."
+];
+
+function reveal(card) {
+  if (card.classList.contains("revealed")) return;
+  const msg = messages.splice(Math.floor(Math.random() * messages.length), 1)[0];
+  card.textContent = msg;
+  card.classList.add("revealed");
+}
+</script>
+</body>
+</html>
