@@ -15,7 +15,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  transition: all 0.6s ease;
+  transition: background 0.6s ease;
 }
 
 .container {
@@ -47,8 +47,9 @@ p {
   padding: 28px 12px;
   cursor: pointer;
   box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  transition: transform 0.25s ease, opacity 0.6s ease;
+  transition: transform 0.4s ease, opacity 0.6s ease;
   position: relative;
+  opacity: 1;
 }
 
 .card:hover {
@@ -68,25 +69,34 @@ p {
   left: 50%;
   transform: translate(-50%, -50%) scale(1.2);
   z-index: 10;
+  transition: transform 0.6s ease, opacity 0.6s ease;
 }
 
 /* Cartes qui s'envolent */
 .card.disparait {
   transform: translateY(-80px) rotate(10deg);
   opacity: 0;
+  transition: transform 0.6s ease, opacity 0.6s ease;
 }
 
 /* Bouton replay */
 #replayBtn {
   margin-top: 16px;
-  padding: 8px 16px;
+  padding: 10px 18px;
   font-size: 1rem;
   border: none;
   border-radius: 8px;
   background: #6b5dd7;
   color: white;
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.3s ease;
+  transition: transform 0.2s ease, background 0.3s ease, opacity 0.4s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#replayBtn.show {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 #replayBtn:hover {
@@ -139,6 +149,7 @@ const messages = [
 
 /* --- Récupération du choix précédent --- */
 let choixDejaFait = localStorage.getItem("choix");
+const replayBtn = document.getElementById('replayBtn');
 
 /* --- Fonction de révélation d'une carte --- */
 function reveal(card) {
@@ -156,6 +167,11 @@ function reveal(card) {
   document.querySelectorAll('.card').forEach(c => {
     if(c !== card) c.classList.add("disparait");
   });
+
+  // montrer le bouton replay
+  setTimeout(() => {
+    replayBtn.classList.add("show");
+  }, 600); // après l'animation
 }
 
 /* --- Recommencer la boucle --- */
@@ -175,6 +191,7 @@ if(choixDejaFait) {
       card.classList.add('disparait');
     }
   });
+  replayBtn.classList.add("show");
 }
 </script>
 </body>
