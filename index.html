@@ -4,65 +4,7 @@
 <meta charset="UTF-8">
 <title>Une petite surprise pour toi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: linear-gradient(135deg, #f6f0ff, #fff);
-  color: #2c2c2c;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
-
-.container {
-  max-width: 420px;
-  padding: 24px;
-  text-align: center;
-}
-
-h1 {
-  font-size: 1.6rem;
-  margin-bottom: 12px;
-}
-
-p {
-  font-size: 1rem;
-  margin-bottom: 24px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
-.card {
-  background: white;
-  border-radius: 14px;
-  padding: 28px 12px;
-  cursor: pointer;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  transition: transform 0.25s ease;
-}
-
-.card:hover {
-  transform: scale(1.03);
-}
-
-.card.revealed {
-  background: #2c2c2c;
-  color: white;
-  cursor: default;
-}
-
-footer {
-  margin-top: 24px;
-  font-size: 0.85rem;
-  color: #666;
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -81,6 +23,8 @@ footer {
     <div class="card" onclick="reveal(this)">Surprise</div>
   </div>
 
+  <button id="replayBtn" onclick="recommencer()">Revenir autrement</button>
+
   <footer>
     Ceci est une zone sécurisée.  
     Toute émotion est assumée.
@@ -97,11 +41,43 @@ const messages = [
   "Bliblablblabliblou"
 ];
 
+// récupération du choix précédent
+let choixDejaFait = localStorage.getItem("choix");
+
 function reveal(card) {
   if (card.classList.contains("revealed")) return;
+
+  // stockage du choix
+  localStorage.setItem("choix", card.textContent);
+
+  // afficher message aléatoire
   const msg = messages.splice(Math.floor(Math.random() * messages.length), 1)[0];
   card.textContent = msg;
-  card.classList.add("revealed");
+  card.classList.add("revealed", "active");
+
+  // faire s'envoler les autres cartes
+  document.querySelectorAll('.card').forEach(c => {
+    if(c !== card) c.classList.add("disparait");
+  });
+}
+
+// recommencer la boucle
+function recommencer() {
+  document.body.classList.add("transition");
+  setTimeout(() => {
+    window.location.reload();
+  }, 600);
+}
+
+// si un choix avait été fait avant, afficher direct (optionnel)
+if(choixDejaFait) {
+  document.querySelectorAll('.card').forEach(card => {
+    if(card.textContent === choixDejaFait) {
+      card.classList.add('revealed', 'active');
+    } else {
+      card.classList.add('disparait');
+    }
+  });
 }
 </script>
 </body>
