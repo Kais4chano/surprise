@@ -4,7 +4,102 @@
 <meta charset="UTF-8">
 <title>Une petite surprise pour toi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
+<style>
+/* --- Styles généraux --- */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #f6f0ff, #fff);
+  color: #2c2c2c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  transition: all 0.6s ease;
+}
+
+.container {
+  max-width: 420px;
+  padding: 24px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+}
+
+p {
+  font-size: 1rem;
+  margin-bottom: 24px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* --- Cartes --- */
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 28px 12px;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transition: transform 0.25s ease, opacity 0.6s ease;
+  position: relative;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.card.revealed {
+  background: #2c2c2c;
+  color: white;
+  cursor: default;
+}
+
+/* Effet ouverture carte */
+.card.active {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.2);
+  z-index: 10;
+}
+
+/* Cartes qui s'envolent */
+.card.disparait {
+  transform: translateY(-80px) rotate(10deg);
+  opacity: 0;
+}
+
+/* Bouton replay */
+#replayBtn {
+  margin-top: 16px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #6b5dd7;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+#replayBtn:hover {
+  transform: scale(1.05);
+  background: #5a4dc7;
+}
+
+footer {
+  margin-top: 24px;
+  font-size: 0.85rem;
+  color: #666;
+}
+</style>
 </head>
 
 <body>
@@ -32,6 +127,7 @@
 </div>
 
 <script>
+/* --- Messages aléatoires --- */
 const messages = [
   "Tu n’habites plus un appart dans mon cœur. Upgrade validé. Villa avec piscine.",
   "Je pensais être calme. Puis tu existes.",
@@ -41,16 +137,17 @@ const messages = [
   "Bliblablblabliblou"
 ];
 
-// récupération du choix précédent
+/* --- Récupération du choix précédent --- */
 let choixDejaFait = localStorage.getItem("choix");
 
+/* --- Fonction de révélation d'une carte --- */
 function reveal(card) {
   if (card.classList.contains("revealed")) return;
 
-  // stockage du choix
+  // stocker le choix
   localStorage.setItem("choix", card.textContent);
 
-  // afficher message aléatoire
+  // afficher un message aléatoire
   const msg = messages.splice(Math.floor(Math.random() * messages.length), 1)[0];
   card.textContent = msg;
   card.classList.add("revealed", "active");
@@ -61,7 +158,7 @@ function reveal(card) {
   });
 }
 
-// recommencer la boucle
+/* --- Recommencer la boucle --- */
 function recommencer() {
   document.body.classList.add("transition");
   setTimeout(() => {
@@ -69,7 +166,7 @@ function recommencer() {
   }, 600);
 }
 
-// si un choix avait été fait avant, afficher direct (optionnel)
+/* --- Affichage si choix existant --- */
 if(choixDejaFait) {
   document.querySelectorAll('.card').forEach(card => {
     if(card.textContent === choixDejaFait) {
