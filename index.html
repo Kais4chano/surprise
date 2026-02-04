@@ -63,7 +63,42 @@ p { font-size: 1rem; margin-bottom: 24px; }
 
 #replayBtn:hover { transform: scale(1.05); background: #5a4dc7; }
 #replayBtn { display: none; } /* invisible tant qu’aucune carte n’est cliquée */
-footer { margin-top: 24px; font-size: 0.85rem; color: #666; }
+
+#endScreen {
+  display: none;
+  text-align: center;
+  margin-top: 40px;
+}
+
+#endMessage {
+  font-size: 1.2rem;
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+#endBtn {
+  margin-top: 16px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #6b5dd7;
+  color: white;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+#endBtn:hover {
+  transform: scale(1.05);
+  background: #5a4dc7;
+}
+
+footer {
+  margin-top: 24px;
+  font-size: 0.85rem;
+  color: #666;
+}
 </style>
 </head>
 
@@ -72,63 +107,48 @@ footer { margin-top: 24px; font-size: 0.85rem; color: #666; }
   <h1>J’ai pensé à toi</h1>
   <p>Blibloublibliblablou Jodjdu bip bip poop pzz</p>
 
-<div class="grid">
+  <div class="grid">
     <div class="card" data-message="Tu n’habites plus un appart dans mon cœur. Upgrade validé. Villa avec piscine.">Tu gagnes…</div>
     <div class="card" data-message="Ton corps me manque (pas seulement ton corps, tout)">Rawr</div>
-    <div class="card" data-message="Tu as refait fleurrir en moi des terres oubliées">Vérité</div>
+    <div class="card" data-message="Tu as refait fleurir en moi des terres oubliées">Vérité</div>
     <div class="card" data-message="Je ne t'explique pas, mais je te choisis chaque jour">Autre vérité</div>
     <div class="card" data-message="Je m'enivre de ta présence, pas de ma faute">Irresponsable</div>
     <div class="card" data-message="Tu es mon plus bel imprévu">Facts</div>
-</div>
+  </div>
 
-<!-- écran final séparé, hors de la grid -->
-<div id="endScreen" style="display:none; text-align:center; margin-top:40px;">
-    <p id="endMessage" style="font-size:1.2rem; opacity:0; transition: opacity 1s;">Fin de l'expérience, aucun engagement n'a été pris, juste un sourire, j'espère.</p>
-    <button id="endBtn" style="margin-top:16px; padding:10px 18px; font-size:1rem; border:none; border-radius:8px; background:#6b5dd7; color:white; cursor:pointer; opacity:0; transition: opacity 0.5s;">OK, ça me va</button>
-</div>
-  
+
+  <!-- écran final séparé -->
+  <div id="endScreen">
+    <p id="endMessage">Fin de l'expérience, aucun engagement n'a été pris, juste un sourire, j'espère.</p>
+    <button id="endBtn">OK, ça me va</button>
+  </div>
+
   <footer>
     Sous contrôle de M. Chano Keroum, huissier de justice agréé
   </footer>
 </div>
 
 <script>
-// Attacher les événements aux cartes
-document.querySelectorAll('.card').forEach(card => {
-  card.addEventListener('click', function() {
-    if (!card.classList.contains('revealed')) {
-      card.textContent = card.dataset.message;
-      card.classList.add('revealed');
-      document.getElementById('replayBtn').style.display = "inline-block";
-    }
-  });
-});
-
-// Bouton “Revenir autrement”
-document.getElementById('replayBtn').addEventListener('click', function() {
-  // juste faire défiler en haut, laisser les cartes révélées en place
-  window.scrollTo(0,0);
-});
-
-  const cards = document.querySelectorAll('.card');
+const cards = document.querySelectorAll('.card');
 const endScreen = document.getElementById('endScreen');
 const endMessage = document.getElementById('endMessage');
 const endBtn = document.getElementById('endBtn');
+
+// sauvegarder le texte original des cartes
+cards.forEach(card => card.setAttribute('data-original', card.textContent));
 
 // fonction pour vérifier si toutes les cartes sont révélées
 function checkAllRevealed() {
   return Array.from(cards).every(card => card.classList.contains('revealed'));
 }
 
-// modification du listener des cartes
+// clic sur chaque carte
 cards.forEach(card => {
   card.addEventListener('click', function() {
     if (!card.classList.contains('revealed')) {
       card.textContent = card.dataset.message;
       card.classList.add('revealed');
-      document.getElementById('replayBtn').style.display = "inline-block";
 
-      // si toutes les cartes sont révélées
       if (checkAllRevealed()) {
         showEndScreen();
       }
@@ -136,41 +156,30 @@ cards.forEach(card => {
   });
 });
 
-// fonction pour afficher l’écran final
-function showEndScreen() {
-  // masquer la grille et le bouton replay
-  document.querySelector('.grid').style.display = "none";
-  replayBtn.style.display = "none";
 
-  // afficher l'écran final
+// afficher l'écran final
+function showEndScreen() {
+  document.querySelector('.grid').style.display = "none";
   endScreen.style.display = "block";
-  
-  // effet d'apparition
+
   setTimeout(() => { endMessage.style.opacity = 1; }, 100);
   setTimeout(() => { endBtn.style.opacity = 1; }, 600);
 }
 
-// bouton OK qui remet la grille à zéro
+// bouton OK qui remet tout à zéro
 endBtn.addEventListener('click', function() {
-  // masquer l'écran final
   endScreen.style.display = "none";
   endMessage.style.opacity = 0;
   endBtn.style.opacity = 0;
 
-  // remettre toutes les cartes à l'état initial
   cards.forEach(card => {
     card.classList.remove('revealed');
-    card.textContent = card.getAttribute('data-original') || card.textContent;
+    card.textContent = card.getAttribute('data-original');
   });
 
-  // afficher la grille et cacher le bouton replay
   document.querySelector('.grid').style.display = "grid";
   replayBtn.style.display = "none";
 });
-
-// sauvegarder le texte original des cartes
-cards.forEach(card => card.setAttribute('data-original', card.textContent));
-
 </script>
 </body>
 </html>
