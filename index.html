@@ -134,10 +134,10 @@ const endScreen = document.getElementById('endScreen');
 const endMessage = document.getElementById('endMessage');
 const endBtn = document.getElementById('endBtn');
 
-// sauvegarder le texte original des cartes
+// pour sauvegarder le texte original des cartes
 cards.forEach(card => card.setAttribute('data-original', card.textContent));
 
-// fonction pour vérifier si toutes les cartes sont révélées
+//  toutes les cartes sont révélées ?????????
 function checkAllRevealed() {
   return Array.from(cards).every(card => card.classList.contains('revealed'));
 }
@@ -157,7 +157,7 @@ cards.forEach(card => {
 });
 
 
-// afficher l'écran final
+// écran final
 function showEndScreen() {
   document.querySelector('.grid').style.display = "none";
   endScreen.style.display = "block";
@@ -166,7 +166,7 @@ function showEndScreen() {
   setTimeout(() => { endBtn.style.opacity = 1; }, 600);
 }
 
-// bouton OK qui remet tout à zéro
+// bouton OK qui reset
 endBtn.addEventListener('click', function() {
   endScreen.style.display = "none";
   endMessage.style.opacity = 0;
